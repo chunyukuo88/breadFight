@@ -1,3 +1,7 @@
+This project was created by running
+
+`pnpm create vite`
+
 # Svelte + Vite
 
 This template should help get you started developing with Svelte in Vite.
