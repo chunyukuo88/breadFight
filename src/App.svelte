@@ -10,14 +10,12 @@
 </script>
 
 <main>
-  <p>wozzle</p>
   <canvas></canvas>
-  <p>mizzle</p>
 </main>
 
 <style>
   canvas {
-    height: 576px;
-    width: 1024px;
+    height: 36rem;
+    width: 64rem;
   }
 </style>
