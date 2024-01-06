@@ -1,6 +1,7 @@
-<script type="module">
-    import * as THREE from 'three'
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+<script lang="ts" type="module">
+    import * as THREE from 'three';
+    import { Box } from './models/Box';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
   
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
@@ -17,19 +18,41 @@
   
     const controls = new OrbitControls(camera, renderer.domElement);
   
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(geometry, material);
+    const cubeSide = 1;
+    const cube = new Box({
+        height: cubeSide, 
+        width: cubeSide, 
+        depth: cubeSide,
+        velocity: {
+            x: 0,
+            y: -0.01,
+            z: 0,
+        },
+        initPosition: {
+            x: 0,
+            y: 1,
+            z: 0
+        }
+    });
     cube.castShadow = true;
     scene.add(cube);
 
-    const groundGeometry = new THREE.BoxGeometry(5, 0.5, 10);
-    const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff });
-    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+
+    const ground = new Box({
+        height: 5, 
+        width: 0.5, 
+        depth: 10,
+        color: 0x0000ff,
+        initPosition: {
+            x: 0,
+            y: -2,
+            z: 0
+        }
+    });
     ground.receiveShadow = true;
-    ground.position.y = -2;
     scene.add(ground);
   
+    
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.y = 3;
     light.position.z = 2;
@@ -40,8 +63,7 @@
     function animate() {
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
+      cube.update(ground);
     }
     animate();
 </script>
