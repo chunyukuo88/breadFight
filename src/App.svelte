@@ -29,28 +29,78 @@
     scene.add(light);
     camera.position.z = 5;
   
+    const keys = {
+        w: { pressed: false },
+        a: { pressed: false },
+        s: { pressed: false },
+        d: { pressed: false },
+        Space: { pressed: false },
+    };
+
+    function handleKeyUp(e) {
+        switch (e.code) {
+        case 'KeyA':
+            keys.a.pressed = false;
+            break;
+        case 'KeyD':
+            keys.d.pressed = false;
+            break;
+        case 'KeyS':
+            keys.s.pressed = false;
+            break;
+        case 'KeyW':
+            keys.w.pressed = false;
+            break;
+        }
+    }
+    
+    function handleKeydown(e){
+        switch (e.code) {
+        case 'KeyA':
+            keys.a.pressed = true;
+            break;
+        case 'KeyD':
+            keys.d.pressed = true;
+            break;
+        case 'KeyS':
+            keys.s.pressed = true;
+            break;
+        case 'KeyW':
+            keys.w.pressed = true;
+            break;
+        case 'Space':
+            cube.velocity.y = 0.2;
+            break;
+        }
+    }
+
     function animate() {
-      requestAnimationFrame(animate);
-      renderer.render(scene, camera);
-      cube.update(ground);
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+        cube.update(ground);
+        const movementDelta = 0.05;
+
+        const { velocity } = cube;
+        const { a, d, w, s } = keys;
+        velocity.x = 0;
+        velocity.z = 0;
+
+        if (a.pressed) {
+            velocity.x = -1 * movementDelta;
+        }
+        if (d.pressed) {
+            velocity.x = movementDelta;
+        }
+        if (w.pressed) {
+            velocity.z = -1 * movementDelta;
+        }   
+        if (s.pressed) {
+            velocity.z = movementDelta;
+        }   
     }
     animate();
 
-    function handleKeydown(e){
-        switch(e.code) {
-            case 'KeyA': {
-                cube.velocity.x = -0.105;
-                cube.update();
-                break;
-            }
-            case 'KeyD': {
-                cube.velocity.x = 0.105;
-                cube.update();
-                break;
-            }
-        }
-    }
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window on:keydown={handleKeydown} on:keyup={handleKeyUp} />
 
