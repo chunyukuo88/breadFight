@@ -68,9 +68,9 @@
         case 'KeyW':
             keys.w.pressed = true;
             break;
-        case 'Space':
+        }
+        if (e.code === 'Space' && cube.position.y < 1) {
             cube.velocity.y = 0.2;
-            break;
         }
     }
 
