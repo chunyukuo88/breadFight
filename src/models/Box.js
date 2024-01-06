@@ -27,25 +27,31 @@ export class Box extends THREE.Mesh {
         this.color = color;
         this.velocity = velocity;
         this.initPosition = initPosition;
-
+        this.gravity = -0.01;
+        this.coefficientOfFriction = 0.8;
         this.position.set(initPosition.x, initPosition.y, initPosition.z);
         this.bottom = this.position.y - this.height / 2;
         this.top = this.position.y + this.height / 2;
     }
 
-    update(ground) {
-        console.log('this.position.y: ', this.position.y);
-        console.log('this.height: ', this.height);
+    applyGravity(ground) {
+        if (this.bottom + this.velocity.y <= ground.top - 2.25) {
+            this.velocity.y *= this.coefficientOfFriction;
+            this.velocity.y = -this.velocity.y;
+        } else {
+            this.position.y += this.velocity.y;
+        }
+    }
 
+    update(ground = null) {
         this.bottom = this.position.y - this.height / 2;
         this.top = this.position.y + this.height / 2;
 
-        this.position.y += this.velocity.y;
+        this.position.x += this.velocity.x;
+        this.velocity.y += this.gravity;
 
-        console.log('cube bottom:', this.bottom);
-        console.log('ground top:', ground.top);
-        if (this.bottom + this.velocity.y <= ground.top - 2.25) {
-            this.velocity.y = -this.velocity.y;
+        if (ground) {
+            this.applyGravity(ground);
         }
     }
 }

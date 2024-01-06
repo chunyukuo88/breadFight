@@ -1,6 +1,7 @@
 <script lang="ts" type="module">
     import * as THREE from 'three';
     import { Box } from './models/Box';
+    import { createCube, createGround, createLight } from './utils';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
   
     const scene = new THREE.Scene();
@@ -18,45 +19,13 @@
   
     const controls = new OrbitControls(camera, renderer.domElement);
   
-    const cubeSide = 1;
-    const cube = new Box({
-        height: cubeSide, 
-        width: cubeSide, 
-        depth: cubeSide,
-        velocity: {
-            x: 0,
-            y: -0.01,
-            z: 0,
-        },
-        initPosition: {
-            x: 0,
-            y: 1,
-            z: 0
-        }
-    });
-    cube.castShadow = true;
+    const cube = createCube();
     scene.add(cube);
 
-
-    const ground = new Box({
-        height: 5, 
-        width: 0.5, 
-        depth: 10,
-        color: 0x0000ff,
-        initPosition: {
-            x: 0,
-            y: -2,
-            z: 0
-        }
-    });
-    ground.receiveShadow = true;
+    const ground = createGround();
     scene.add(ground);
-  
     
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.y = 3;
-    light.position.z = 2;
-    light.castShadow = true;
+    const light = createLight();
     scene.add(light);
     camera.position.z = 5;
   
@@ -66,5 +35,22 @@
       cube.update(ground);
     }
     animate();
+
+    function handleKeydown(e){
+        switch(e.code) {
+            case 'KeyA': {
+                cube.velocity.x = -0.105;
+                cube.update();
+                break;
+            }
+            case 'KeyD': {
+                cube.velocity.x = 0.105;
+                cube.update();
+                break;
+            }
+        }
+    }
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
