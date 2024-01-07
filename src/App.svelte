@@ -1,6 +1,5 @@
 <script lang="ts" type="module">
     import * as THREE from 'three';
-    import { Box } from './models/Box';
     import { createCube, createGround, createLight } from './utils';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
   
@@ -70,7 +69,7 @@
             break;
         }
         if (e.code === 'Space' && cube.position.y < 1) {
-            cube.velocity.y = 0.2;
+            cube.velocity.y = 0.3;
         }
     }
 

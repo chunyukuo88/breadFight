@@ -44,7 +44,7 @@ export class Box extends THREE.Mesh {
 
     applyGravity(ground = null) {
         if (!ground) {
-            return this.position.y -= 0.05;
+            return this.position.y -= 0.23;
         }
         if (this.bottom + this.velocity.y <= ground.top - 2.25) {
             this.velocity.y *= this.coefficientOfFriction;
