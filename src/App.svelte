@@ -1,47 +1,106 @@
-<script>
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from '/vite.svg'
-  import Counter from './lib/Counter.svelte'
+<script lang="ts" type="module">
+    import * as THREE from 'three';
+    import { Box } from './models/Box';
+    import { createCube, createGround, createLight } from './utils';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+  
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+  
+    const renderer = new THREE.WebGLRenderer();
+    renderer.shadowMap.enabled = true;
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+  
+    const controls = new OrbitControls(camera, renderer.domElement);
+  
+    const cube = createCube();
+    scene.add(cube);
+
+    const ground = createGround();
+    scene.add(ground);
+    
+    const light = createLight();
+    scene.add(light);
+    camera.position.z = 5;
+  
+    const keys = {
+        w: { pressed: false },
+        a: { pressed: false },
+        s: { pressed: false },
+        d: { pressed: false },
+        Space: { pressed: false },
+    };
+
+    function handleKeyUp(e) {
+        switch (e.code) {
+        case 'KeyA':
+            keys.a.pressed = false;
+            break;
+        case 'KeyD':
+            keys.d.pressed = false;
+            break;
+        case 'KeyS':
+            keys.s.pressed = false;
+            break;
+        case 'KeyW':
+            keys.w.pressed = false;
+            break;
+        }
+    }
+    
+    function handleKeydown(e){
+        switch (e.code) {
+        case 'KeyA':
+            keys.a.pressed = true;
+            break;
+        case 'KeyD':
+            keys.d.pressed = true;
+            break;
+        case 'KeyS':
+            keys.s.pressed = true;
+            break;
+        case 'KeyW':
+            keys.w.pressed = true;
+            break;
+        }
+        if (e.code === 'Space' && cube.position.y < 1) {
+            cube.velocity.y = 0.2;
+        }
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+        cube.update(ground);
+        const movementDelta = 0.08;
+
+        const { velocity } = cube;
+        const { a, d, w, s } = keys;
+        velocity.x = 0;
+        velocity.z = 0;
+
+        if (a.pressed) {
+            velocity.x = -1 * movementDelta;
+        }
+        if (d.pressed) {
+            velocity.x = movementDelta;
+        }
+        if (w.pressed) {
+            velocity.z = -1 * movementDelta;
+        }   
+        if (s.pressed) {
+            velocity.z = movementDelta;
+        }   
+    }
+    animate();
+
 </script>
 
-<main>
-  <div>
-    <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-      <img src={viteLogo} class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
-  </div>
-  <h1>Vite + Svelte</h1>
+<svelte:window on:keydown={handleKeydown} on:keyup={handleKeyUp} />
 
-  <div class="card">
-    <Counter />
-  </div>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
-</main>
-
-<style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
-  }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-  }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
-  }
-  .read-the-docs {
-    color: #888;
-  }
-</style>
