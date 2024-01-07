@@ -27,22 +27,25 @@ export class Box extends THREE.Mesh {
         this.color = color;
         this.velocity = velocity;
         this.initPosition = initPosition;
-        this.gravity = -0.01;
+        this.gravity = -0.02;
         this.coefficientOfFriction = 0.8;
         this.position.set(initPosition.x, initPosition.y, initPosition.z);
         this.updateSides();
     }
 
     updateSides() {
-        this.bottom = this.position.y - this.height / 2;
-        this.top = this.position.y + this.height / 2;
-        this.left = this.position.x - this.width / 2;
-        this.right = this.position.x + this.width / 2;
-        this.front = this.position.z + this.depth / 2
-        this.back = this.position.z - this.depth / 2
+        this.bottom = this.position.y - (this.height / 2);
+        this.top = this.position.y + (this.height / 2);
+        this.left = this.position.x - (this.width / 2);
+        this.right = this.position.x + (this.width / 2);
+        this.front = this.position.z + (this.depth / 2);
+        this.back = this.position.z - (this.depth / 2);
     }
 
-    applyGravity(ground) {
+    applyGravity(ground = null) {
+        if (!ground) {
+            return this.position.y -= 0.05;
+        }
         if (this.bottom + this.velocity.y <= ground.top - 2.25) {
             this.velocity.y *= this.coefficientOfFriction;
             this.velocity.y = -this.velocity.y;
@@ -51,19 +54,18 @@ export class Box extends THREE.Mesh {
         }
     }
 
+    
     update(ground = null) {
         this.updateSides();
         this.position.x += this.velocity.x;
         this.position.z += this.velocity.z;
-               
-        // collision detection with the ground.
-        // console.log(`
-        // this.right: ${this.right}
-        // ground.left: ${ground.left}
-        // `);
-        // if (this.right <= ground.left && this.left <= ground.right) {
-        if (this.right <= (ground.left * 9)) {
-            console.count('moo');
+        
+        const exitedGroundFromLeft = this.right <= (ground.left * 9);
+        const exitedFromTheRight = this.left >= (ground.right * 9);
+        const exitedFromBackOrFront = this.front <= ground.back || this.back >= ground.front;
+        const theCubeFell = exitedGroundFromLeft || exitedFromTheRight || exitedFromBackOrFront;
+        if (theCubeFell) {
+            return this.applyGravity();
         }
 
         this.velocity.y += this.gravity;

@@ -78,7 +78,7 @@
         requestAnimationFrame(animate);
         renderer.render(scene, camera);
         cube.update(ground);
-        const movementDelta = 0.05;
+        const movementDelta = 0.08;
 
         const { velocity } = cube;
         const { a, d, w, s } = keys;
