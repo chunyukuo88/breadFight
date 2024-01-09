@@ -1,16 +1,21 @@
 import * as THREE from 'three';
 import { Box } from './models/Box';
 
+export function canAvoidCollision(box1, box2) {
+    return (box1.position.x - box2.position.x > 1) 
+    || (box2.position.x - box1.position.x > 1);
+}
+
 export function boxesCollided(box1, box2) {
+    const avoidsCollision = canAvoidCollision(box1, box2);
     const headOnDelta = box1.back - box2.front;
-    // const rearDelta = Math.abs(Math.abs(box2.back) - Math.abs(box1.front));
+    const rearDelta = box2.back - box1.front;
 
     const headOnCollision = (headOnDelta > 0) && (headOnDelta < 0.1);
-    // const rearCollision = (rearDelta > 0) && (rearDelta < 0.1);
+    const rearCollision = (rearDelta > 0) && (rearDelta < 0.1);
 
-    // const xCollision = headOnCollision || rearCollision;
-    const xCollision = headOnCollision;
-    // TODO: WIP
+    const xCollision = (headOnCollision || rearCollision) && !avoidsCollision;
+
     return xCollision;
 }
 
