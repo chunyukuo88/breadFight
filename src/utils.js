@@ -2,13 +2,14 @@ import * as THREE from 'three';
 import { Box } from './models/Box';
 
 export function boxesCollided(box1, box2) {
-    const headOnDelta = Math.abs(Math.abs(box1.back) - Math.abs(box2.front));
-    const rearDelta = Math.abs(Math.abs(box2.back) - Math.abs(box1.front));
+    const headOnDelta = box1.back - box2.front;
+    // const rearDelta = Math.abs(Math.abs(box2.back) - Math.abs(box1.front));
 
     const headOnCollision = (headOnDelta > 0) && (headOnDelta < 0.1);
-    const rearCollision = (rearDelta > 0) && (rearDelta < 0.1);
+    // const rearCollision = (rearDelta > 0) && (rearDelta < 0.1);
 
-    const xCollision = headOnCollision || rearCollision;
+    // const xCollision = headOnCollision || rearCollision;
+    const xCollision = headOnCollision;
     // TODO: WIP
     return xCollision;
 }
