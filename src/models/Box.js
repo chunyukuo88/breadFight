@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-
+import { boxFellOffGround } from '../utils';
 export class Box extends THREE.Mesh {
     constructor({
         height, 
@@ -44,9 +44,9 @@ export class Box extends THREE.Mesh {
 
     applyGravity(ground = null) {
         if (!ground) {
-            return this.position.y -= 0.05;
+            return this.position.y -= 0.23;
         }
-        if (this.bottom + this.velocity.y <= ground.top - 2.25) {
+        if (boxFellOffGround(this, ground)) {
             this.velocity.y *= this.coefficientOfFriction;
             this.velocity.y = -this.velocity.y;
         } else {
