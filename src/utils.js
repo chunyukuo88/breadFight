@@ -1,9 +1,15 @@
 import * as THREE from 'three';
 import { Box } from './models/Box';
 
-export function createCube() {
+export function boxesCollided(box1, box2) {
+    return box1.bottom + box1.velocity.y <= box2.top - 2.25;
+}
+
+export function createCube(x, y, z, color = undefined) {
     const cubeSide = 1;
     const cube = new Box({
+        initPosition: { x, y, z },
+        color,
         height: cubeSide, 
         width: cubeSide, 
         depth: cubeSide,
@@ -12,11 +18,6 @@ export function createCube() {
             y: -0.01,
             z: 0,
         },
-        initPosition: {
-            x: 0,
-            y: 1,
-            z: 0
-        }
     });
     cube.castShadow = true;
     return cube;

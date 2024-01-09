@@ -1,6 +1,11 @@
 <script lang="ts" type="module">
     import * as THREE from 'three';
-    import { createCube, createGround, createLight } from './utils';
+    import { 
+        boxesCollided, 
+        createCube, 
+        createGround, 
+        createLight 
+    } from './utils';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
   
     const scene = new THREE.Scene();
@@ -18,8 +23,12 @@
   
     const controls = new OrbitControls(camera, renderer.domElement);
   
-    const cube = createCube();
+    const cube = createCube(0, 0.25, 0);
     scene.add(cube);
+
+    const red = 0xFF0000;
+    const enemy = createCube(0, -1.25, -2, red);
+    scene.add(enemy);
 
     const ground = createGround();
     scene.add(ground);
@@ -74,9 +83,13 @@
     }
 
     function animate() {
-        requestAnimationFrame(animate);
+        const animationId = requestAnimationFrame(animate);
         renderer.render(scene, camera);
         cube.update(ground);
+        enemy.update(ground);
+        if (boxesCollided(cube,enemy)) {
+            console.log('moist');
+        }
         const movementDelta = 0.08;
 
         const { velocity } = cube;
