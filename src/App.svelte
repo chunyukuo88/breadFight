@@ -88,7 +88,7 @@
         cube.update(ground);
         enemy.update(ground);
         if (boxesCollided(cube,enemy)) {
-            console.log('moist');
+            cancelAnimationFrame(animationId);
         }
         const movementDelta = 0.08;
 
