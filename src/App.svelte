@@ -119,7 +119,8 @@
         velocity.z = 0;
 
         enemies.forEach(enemy => {
-            enemy.update(ground)
+            enemy.update(ground);
+            enemy.castShadow = true;
             if (boxesCollided(cube,enemy)) {
                 cancelAnimationFrame(animationId);
             }
