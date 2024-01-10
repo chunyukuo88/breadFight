@@ -1,11 +1,12 @@
 import * as THREE from 'three';
 import { boxFellOffGround } from '../utils';
+import { colors } from '../constants';
 export class Box extends THREE.Mesh {
     constructor({
         height, 
         width, 
         depth, 
-        color = '#00ff00', 
+        color = colors.greenDefault, 
         velocity = {
             x: 0,
             y: 0,
@@ -56,6 +57,13 @@ export class Box extends THREE.Mesh {
         }
     }
 
+    #theCubeFell(ground) {
+        const exitedGroundFromLeft = this.right <= (ground.left * 9);
+        const exitedFromTheRight = this.left >= (ground.right * 9);
+        const exitedFromBackOrFront = this.front <= ground.back || this.back >= ground.front;
+        return exitedGroundFromLeft || exitedFromTheRight || exitedFromBackOrFront;
+    }
+
     update(ground = null) {
         this.updateSides();
         this.position.x += this.velocity.x;
@@ -64,11 +72,8 @@ export class Box extends THREE.Mesh {
         if (this.zAcceleration) {
             this.velocity.z += 0.0004;
         }
-        const exitedGroundFromLeft = this.right <= (ground.left * 9);
-        const exitedFromTheRight = this.left >= (ground.right * 9);
-        const exitedFromBackOrFront = this.front <= ground.back || this.back >= ground.front;
-        const theCubeFell = exitedGroundFromLeft || exitedFromTheRight || exitedFromBackOrFront;
-        if (theCubeFell) {
+        
+        if (this.#theCubeFell(ground)) {
             return this.applyGravity();
         }
 
