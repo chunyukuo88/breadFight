@@ -1,19 +1,15 @@
 import * as THREE from 'three';
 import { Box } from './models/Box';
 
-function canAvoidCollisionX(box1, box2) {
-    return (box1.position.x - box2.position.x > 1) 
-    || (box2.position.x - box1.position.x > 1);
-}
-
-function canAvoidCollisionZ(box1, box2) {
-    return (box1.position.z - box2.position.z > 1) 
-    || (box2.position.z - box1.position.z > 1);
+function canAvoidCollision(box1, box2, dimension) {
+    return (box1.position[dimension] - box2.position[dimension] > 1) 
+    || (box2.position[dimension] - box1.position[dimension] > 1);
 }
 
 export function boxesCollided(box1, box2) {
-    const avoidsCollisionX = canAvoidCollisionX(box1, box2);
-    const avoidsCollisionZ = canAvoidCollisionZ(box1, box2);
+    const avoidsCollisionX = canAvoidCollision(box1, box2, 'x');
+    const avoidsCollisionY = canAvoidCollision(box1, box2, 'y')
+    const avoidsCollisionZ = canAvoidCollision(box1, box2, 'z');
     const collisionMargin = 0.06;
 
     const headOnDelta = box1.back - box2.front;
@@ -21,14 +17,15 @@ export function boxesCollided(box1, box2) {
 
     const leftDelta = box1.left - box2.right;
     const rightDelta = box1.right - box2.left;
+    const topDelta = box1.bottom + box2.top;
 
     const headOnCollision = (headOnDelta > 0) && (headOnDelta < collisionMargin);
     const rearCollision = (rearDelta > 0) && (rearDelta < collisionMargin);
     const rightCollision = (leftDelta > 0) && (leftDelta < collisionMargin);
     const leftCollision = (rightDelta > 0) && (rightDelta < collisionMargin);
 
-    const xCollision = (headOnCollision || rearCollision) && !avoidsCollisionX;
-    const zCollision = (rightCollision || leftCollision) && !avoidsCollisionZ;
+    const xCollision = (headOnCollision || rearCollision) && !avoidsCollisionX && !avoidsCollisionY;
+    const zCollision = (rightCollision || leftCollision) && !avoidsCollisionZ && !avoidsCollisionY;
     return xCollision || zCollision;
 }
 
@@ -37,19 +34,34 @@ export function boxFellOffGround(box, ground) {
     return itFell;
 }
 
-export function createCube(x, y, z, color = undefined) {
+export function createStripe() {
+    const stripe = new Box({
+        initPosition: { x: 0.25, y: -1.5, z: -42 },
+        velocity: { x: 0, y: 0, z: 0.09 },
+        color: '0xFFFFFF',
+        height: 0.5,
+        width: 0,
+        depth: 3,
+        zAcceleration: false
+    });
+    stripe.castShadow = false;
+    return stripe;
+}
+
+export function createCube(position, velocity, color = undefined, zAcceleration = false) {
     const cubeSide = 1;
     const cube = new Box({
-        initPosition: { x, y, z },
+        initPosition: { 
+            x: position.x, 
+            y: position.y, 
+            z: position.z 
+        },
+        velocity,
         color,
         height: cubeSide, 
         width: cubeSide, 
         depth: cubeSide,
-        velocity: {
-            x: 0,
-            y: -0.01,
-            z: 0,
-        },
+        zAcceleration
     });
     cube.castShadow = true;
     return cube;
@@ -59,7 +71,7 @@ export function createGround() {
     const ground = new Box({
         height: 5, 
         width: 0.5, 
-        depth: 10,
+        depth: 100,
         color: 0x0000ff,
         initPosition: {
             x: 0,

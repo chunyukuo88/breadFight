@@ -4,7 +4,8 @@
         boxesCollided, 
         createCube, 
         createGround, 
-        createLight 
+        createLight,
+        createStripe
     } from './utils';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
   
@@ -15,6 +16,8 @@
       0.1,
       1000
     );
+    camera.position.set(4.61, 2.74, 8)
+
   
     const renderer = new THREE.WebGLRenderer();
     renderer.shadowMap.enabled = true;
@@ -23,12 +26,18 @@
   
     const controls = new OrbitControls(camera, renderer.domElement);
   
-    const cube = createCube(0, 0.25, 0);
+    const heroCubePosition = {
+        x: 0,
+        y: 0.25,
+        z: 0,
+    };
+    const heroVelocity = {
+        x: 0,
+        y: 0,
+        z: 0,
+    };
+    const cube = createCube(heroCubePosition, heroVelocity);
     scene.add(cube);
-
-    const red = 0xFF0000;
-    const enemy = createCube(0, -1.25, -2, red);
-    scene.add(enemy);
 
     const ground = createGround();
     scene.add(ground);
@@ -82,20 +91,57 @@
         }
     }
 
+    
+    const roadStripes = [];
+    const enemies = [];
+    const movementDelta = 0.08;
+    let frames = 0;
+
     function animate() {
         const animationId = requestAnimationFrame(animate);
         renderer.render(scene, camera);
         cube.update(ground);
-        enemy.update(ground);
-        if (boxesCollided(cube,enemy)) {
-            cancelAnimationFrame(animationId);
-        }
-        const movementDelta = 0.08;
 
+        if (frames % 120 === 0) {
+            const newStripe = createStripe();
+            scene.add(newStripe);
+            roadStripes.push(newStripe);
+        }
+        if (frames % 30 === 0) {
+            const red = 0xFF0000;
+            const randomLane = (Math.random() * 5) - 2.25;
+            const enemyPosition = {
+                x: randomLane,
+                y: 0,
+                z: -42,
+            };
+            const enemyVelocity = {
+                x: 0,
+                y: 0,
+                z: 0.05,
+            };
+            const zAcceleration = true;
+            const newEnemy = createCube(enemyPosition, enemyVelocity, red, zAcceleration);
+            newEnemy.castShadow = true;
+            scene.add(newEnemy);
+            enemies.push(newEnemy);
+        }
+
+        
         const { velocity } = cube;
         const { a, d, w, s } = keys;
         velocity.x = 0;
         velocity.z = 0;
+
+        roadStripes.forEach(stripe => {
+            stripe.update(ground);
+        });
+        enemies.forEach(enemy => {
+            enemy.update(ground);
+            if (boxesCollided(cube,enemy)) {
+                cancelAnimationFrame(animationId);
+            }
+        });
 
         if (a.pressed) {
             velocity.x = -1 * movementDelta;
@@ -109,6 +155,7 @@
         if (s.pressed) {
             velocity.z = movementDelta;
         }   
+        frames++;
     }
     animate();
 
