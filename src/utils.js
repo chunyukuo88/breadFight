@@ -34,7 +34,21 @@ export function boxFellOffGround(box, ground) {
     return itFell;
 }
 
-export function createCube(position, velocity, color = undefined) {
+export function createStripe() {
+    const stripe = new Box({
+        initPosition: { x: 0.25, y: -1.5, z: -42 },
+        velocity: { x: 0, y: 0, z: 0.09 },
+        color: '0xFFFFFF',
+        height: 0.5,
+        width: 0,
+        depth: 3,
+        zAcceleration: false
+    });
+    stripe.castShadow = false;
+    return stripe;
+}
+
+export function createCube(position, velocity, color = undefined, zAcceleration = false) {
     const cubeSide = 1;
     const cube = new Box({
         initPosition: { 
@@ -42,11 +56,12 @@ export function createCube(position, velocity, color = undefined) {
             y: position.y, 
             z: position.z 
         },
+        velocity,
         color,
         height: cubeSide, 
         width: cubeSide, 
         depth: cubeSide,
-        velocity,
+        zAcceleration
     });
     cube.castShadow = true;
     return cube;

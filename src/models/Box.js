@@ -15,7 +15,8 @@ export class Box extends THREE.Mesh {
             x: 0,
             y: 0,
             z: 0,
-        }
+        },
+        zAcceleration
     }) {
         super(
             new THREE.BoxGeometry(height, width, depth), 
@@ -30,6 +31,7 @@ export class Box extends THREE.Mesh {
         this.gravity = -0.02;
         this.coefficientOfFriction = 0.8;
         this.position.set(initPosition.x, initPosition.y, initPosition.z);
+        this.zAcceleration = zAcceleration;
         this.updateSides();
     }
 
@@ -54,12 +56,14 @@ export class Box extends THREE.Mesh {
         }
     }
 
-    
     update(ground = null) {
         this.updateSides();
         this.position.x += this.velocity.x;
         this.position.z += this.velocity.z;
         
+        if (this.zAcceleration) {
+            this.velocity.z += 0.0004;
+        }
         const exitedGroundFromLeft = this.right <= (ground.left * 9);
         const exitedFromTheRight = this.left >= (ground.right * 9);
         const exitedFromBackOrFront = this.front <= ground.back || this.back >= ground.front;

@@ -4,7 +4,8 @@
         boxesCollided, 
         createCube, 
         createGround, 
-        createLight 
+        createLight,
+        createStripe
     } from './utils';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
   
@@ -37,20 +38,6 @@
     };
     const cube = createCube(heroCubePosition, heroVelocity);
     scene.add(cube);
-
-    const red = 0xFF0000;
-    const enemyPosition = {
-        x: 0,
-        y: -1.25,
-        z: -42,
-    };
-    const enemyVelocity = {
-        x: 0,
-        y: 0,
-        z: 0.1,
-    };
-    const enemy = createCube(enemyPosition, enemyVelocity, red);
-    scene.add(enemy);
 
     const ground = createGround();
     scene.add(ground);
@@ -104,13 +91,41 @@
         }
     }
 
-    const enemies = [enemy];
+    
+    const roadStripes = [];
+    const enemies = [];
     const movementDelta = 0.08;
+    let frames = 0;
 
     function animate() {
         const animationId = requestAnimationFrame(animate);
         renderer.render(scene, camera);
         cube.update(ground);
+
+        if (frames % 120 === 0) {
+            const newStripe = createStripe();
+            scene.add(newStripe);
+            roadStripes.push(newStripe);
+        }
+        if (frames % 30 === 0) {
+            const red = 0xFF0000;
+            const randomLane = (Math.random() * 5) - 2.25;
+            const enemyPosition = {
+                x: randomLane,
+                y: 0,
+                z: -42,
+            };
+            const enemyVelocity = {
+                x: 0,
+                y: 0,
+                z: 0.05,
+            };
+            const zAcceleration = true;
+            const newEnemy = createCube(enemyPosition, enemyVelocity, red, zAcceleration);
+            newEnemy.castShadow = true;
+            scene.add(newEnemy);
+            enemies.push(newEnemy);
+        }
 
         
         const { velocity } = cube;
@@ -118,9 +133,11 @@
         velocity.x = 0;
         velocity.z = 0;
 
+        roadStripes.forEach(stripe => {
+            stripe.update(ground);
+        });
         enemies.forEach(enemy => {
             enemy.update(ground);
-            enemy.castShadow = true;
             if (boxesCollided(cube,enemy)) {
                 cancelAnimationFrame(animationId);
             }
@@ -138,6 +155,7 @@
         if (s.pressed) {
             velocity.z = movementDelta;
         }   
+        frames++;
     }
     animate();
 
