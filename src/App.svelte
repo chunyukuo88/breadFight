@@ -25,11 +25,31 @@
   
     const controls = new OrbitControls(camera, renderer.domElement);
   
-    const cube = createCube(0, 0.25, 0);
+    const heroCubePosition = {
+        x: 0,
+        y: 0.25,
+        z: 0,
+    };
+    const heroVelocity = {
+        x: 0,
+        y: 0,
+        z: 0,
+    };
+    const cube = createCube(heroCubePosition, heroVelocity);
     scene.add(cube);
 
     const red = 0xFF0000;
-    const enemy = createCube(0, -1.25, -2, red);
+    const enemyPosition = {
+        x: 0,
+        y: -1.25,
+        z: -42,
+    };
+    const enemyVelocity = {
+        x: 0,
+        y: 0,
+        z: 0.1,
+    };
+    const enemy = createCube(enemyPosition, enemyVelocity, red);
     scene.add(enemy);
 
     const ground = createGround();
@@ -100,10 +120,10 @@
 
         enemies.forEach(enemy => {
             enemy.update(ground)
+            if (boxesCollided(cube,enemy)) {
+                cancelAnimationFrame(animationId);
+            }
         });
-        if (boxesCollided(cube,enemy)) {
-            cancelAnimationFrame(animationId);
-        }
 
         if (a.pressed) {
             velocity.x = -1 * movementDelta;

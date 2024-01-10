@@ -40,19 +40,19 @@ export function boxFellOffGround(box, ground) {
     return itFell;
 }
 
-export function createCube(x, y, z, color = undefined) {
+export function createCube(position, velocity, color = undefined) {
     const cubeSide = 1;
     const cube = new Box({
-        initPosition: { x, y, z },
+        initPosition: { 
+            x: position.x, 
+            y: position.y, 
+            z: position.z 
+        },
         color,
         height: cubeSide, 
         width: cubeSide, 
         depth: cubeSide,
-        velocity: {
-            x: 0,
-            y: -0.01,
-            z: 0,
-        },
+        velocity,
     });
     cube.castShadow = true;
     return cube;
