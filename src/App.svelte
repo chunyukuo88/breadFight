@@ -15,6 +15,8 @@
       0.1,
       1000
     );
+    camera.position.set(4.61, 2.74, 8)
+
   
     const renderer = new THREE.WebGLRenderer();
     renderer.shadowMap.enabled = true;
@@ -82,20 +84,26 @@
         }
     }
 
+    const enemies = [enemy];
+    const movementDelta = 0.08;
+
     function animate() {
         const animationId = requestAnimationFrame(animate);
         renderer.render(scene, camera);
         cube.update(ground);
-        enemy.update(ground);
-        if (boxesCollided(cube,enemy)) {
-            cancelAnimationFrame(animationId);
-        }
-        const movementDelta = 0.08;
 
+        
         const { velocity } = cube;
         const { a, d, w, s } = keys;
         velocity.x = 0;
         velocity.z = 0;
+
+        enemies.forEach(enemy => {
+            enemy.update(ground)
+        });
+        if (boxesCollided(cube,enemy)) {
+            cancelAnimationFrame(animationId);
+        }
 
         if (a.pressed) {
             velocity.x = -1 * movementDelta;
