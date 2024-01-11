@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
-import { Box } from '../models/Box.js';
+import { Box } from '../models/Box';
 import * as THREE from 'three';
-import { colors } from '../constants.js';
+import { colors } from 'src/constants';
 import {
   boxFellOffGround,
   createCube,
@@ -9,7 +9,7 @@ import {
   createLight,
   createStripe,
   boxesCollided,
-} from '../utils';
+} from 'src/utils';
 
 describe('utils.js', () => {
   describe('boxFellOffGround()', ()=>{

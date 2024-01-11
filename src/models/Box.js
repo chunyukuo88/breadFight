@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { boxFellOffGround } from '../utils';
 import { colors } from '../constants';
+
 export class Box extends THREE.Mesh {
     constructor({
         height, 

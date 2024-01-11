@@ -25,7 +25,7 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
   
-    // This allows for the camera to be rotatable.
+    // This 'controls' constant is unused but must be kept to allow for the camera to be rotatable.
     const controls = new OrbitControls(camera, renderer.domElement);
   
     const heroCubePosition = {
