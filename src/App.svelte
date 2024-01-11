@@ -17,13 +17,15 @@
       1000
     );
     camera.position.set(4.61, 2.74, 8)
-
+    camera.position.z = 5;
   
     const renderer = new THREE.WebGLRenderer();
+    renderer.setClearColor(0xabcdef);
     renderer.shadowMap.enabled = true;
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
   
+    // This allows for the camera to be rotatable.
     const controls = new OrbitControls(camera, renderer.domElement);
   
     const heroCubePosition = {
@@ -42,9 +44,11 @@
     const ground = createGround();
     scene.add(ground);
     
-    const light = createLight();
-    scene.add(light);
-    camera.position.z = 5;
+    const light1 = createLight(-1, 3, 2);
+    scene.add(light1);
+    
+    const light2 = createLight(3, 5, -10);
+    scene.add(light2);
   
     const keys = {
         w: { pressed: false },
@@ -104,6 +108,7 @@
 
         if (frames % 120 === 0) {
             const newStripe = createStripe();
+            newStripe.color = 'white';
             scene.add(newStripe);
             roadStripes.push(newStripe);
         }

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Box } from './models/Box';
+import { colors } from './constants.js';
 
 function canAvoidCollision(box1, box2, dimension) {
     return (box1.position[dimension] - box2.position[dimension] > 1) 
@@ -17,7 +18,6 @@ export function boxesCollided(box1, box2) {
 
     const leftDelta = box1.left - box2.right;
     const rightDelta = box1.right - box2.left;
-    const topDelta = box1.bottom + box2.top;
 
     const headOnCollision = (headOnDelta > 0) && (headOnDelta < collisionMargin);
     const rearCollision = (rearDelta > 0) && (rearDelta < collisionMargin);
@@ -36,15 +36,15 @@ export function boxFellOffGround(box, ground) {
 
 export function createStripe() {
     const stripe = new Box({
-        initPosition: { x: 0.25, y: -1.5, z: -42 },
+        initPosition: { x: 0.25, y: -1.75, z: -42 },
         velocity: { x: 0, y: 0, z: 0.09 },
-        color: '0xFFFFFF',
+        color: colors.whiteStripe,
         height: 0.5,
-        width: 0,
+        width: 0.01,
         depth: 3,
         zAcceleration: false
     });
-    stripe.castShadow = false;
+    stripe.castShadow = true;
     return stripe;
 }
 
@@ -72,21 +72,23 @@ export function createGround() {
         height: 5, 
         width: 0.5, 
         depth: 100,
-        color: 0x0000ff,
+        color: 'gray',
         initPosition: {
             x: 0,
             y: -2,
             z: 0
-        }
+        },
+        zAcceleration: false
     });
     ground.receiveShadow = true;
     return ground;
 }
 
-export function createLight() {
+export function createLight(xPosition, yPosition, zPosition) {
     const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.y = 3;
-    light.position.z = 2;
+    light.position.x = xPosition;
+    light.position.y = yPosition;
+    light.position.z = zPosition;
     light.castShadow = true;
     return light;
 }
