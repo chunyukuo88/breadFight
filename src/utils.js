@@ -36,15 +36,15 @@ export function boxFellOffGround(box, ground) {
 
 export function createStripe() {
     const stripe = new Box({
-        initPosition: { x: 0.25, y: -1.5, z: -42 },
+        initPosition: { x: 0.25, y: -1.75, z: -42 },
         velocity: { x: 0, y: 0, z: 0.09 },
-        color: 'white',
+        color: colors.whiteStripe,
         height: 0.5,
-        width: 0,
+        width: 0.01,
         depth: 3,
         zAcceleration: false
     });
-    stripe.castShadow = false;
+    stripe.castShadow = true;
     return stripe;
 }
 
@@ -77,7 +77,8 @@ export function createGround() {
             x: 0,
             y: -2,
             z: 0
-        }
+        },
+        zAcceleration: false
     });
     ground.receiveShadow = true;
     return ground;
