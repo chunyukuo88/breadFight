@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { Box } from './models/Box';
-import { colors } from './constants.js';
+import {Box} from './models/Box';
+import {colors} from './constants.js';
 
 function canAvoidCollision(box1, box2, dimension) {
     return (box1.position[dimension] - box2.position[dimension] > 1) 
@@ -30,8 +30,7 @@ export function boxesCollided(box1, box2) {
 }
 
 export function boxFellOffGround(box, ground) {
-    const itFell = box.bottom + box.velocity.y <= ground.top - 2.25;
-    return itFell;
+    return box.bottom + box.velocity.y <= ground.top - 2.25;
 }
 
 export function createStripe() {
