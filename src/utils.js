@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import {Box} from './models/Box';
-import {colors} from './constants.js';
+import { Box } from './models/Box';
+import { colors } from './constants.js';
 
 function canAvoidCollision(box1, box2, dimension) {
     return (box1.position[dimension] - box2.position[dimension] > 1) 
